@@ -1,26 +1,21 @@
 const express = require('express');
-const expressStatic = require('express-static');
-const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
-
+const cookieSession =require('cookie-session')
 const app = express();
-// post请求解析中间件
-app.use(bodyParser.urlencoded({
-  extended: false,
-  limit: 2*1024*1024
+
+let arr = [];
+for(let i=0;i<1000;i++) {
+  arr.push('ios'+ Math.random()*100);
+}
+app.use(cookieParser());
+app.use(cookieSession({
+  name:'sess',
+  keys: arr,
+  maxAge:24*3600*1000
 }))
-// cookie解析中间件
-app.use(cookieParser('abcdef'))
-app.use('/',(req, res) => {
-  //区分不同的cookie
-  console.log(req.cookies);
-  console.log(req.signedCookies)
-  // 设置cookie
-  const secrets = 'abcdef';
-  res.cookie('user', 'blue',{signed:true})
-  res.cookie('name','zhangsan');
-  res.send('success')
-  res.end();
+
+app.use('/',function(req,res) {
+  req.session.count = 99;
+  res.send('ok')
 })
-app.use(express.static('./www'))
-app.listen(9000);
+app.listen(9000)
