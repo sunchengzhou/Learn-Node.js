@@ -1,4 +1,11 @@
 html
+  script.
+    window.onload = function() {
+      console.log('loaded')
+    }
+  script(src="a.js")
+  script
+    include a.js
   body
     div(style={width:'100px',height:'200px'})
     div(style="width:100px;height:200px")
